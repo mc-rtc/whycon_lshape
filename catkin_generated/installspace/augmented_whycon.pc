@@ -1,0 +1,8 @@
+prefix=/usr/local
+
+Name: augmented_whycon
+Description: Description of augmented_whycon
+Version: 0.0.0
+Cflags: -I/usr/local/include
+Libs: -L/usr/local/lib 
+Requires: roscpp geometry_msgs std_msgs message_runtime tf

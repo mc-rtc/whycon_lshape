@@ -1,0 +1,8 @@
+prefix=/home/pfeiffer/catkin_ws/src/whyconLshape/devel
+
+Name: augmented_whycon
+Description: Description of augmented_whycon
+Version: 0.0.0
+Cflags: -I/home/pfeiffer/catkin_ws/src/whyconLshape/devel/include -I/home/pfeiffer/catkin_ws/src/whyconLshape/include
+Libs: -L/home/pfeiffer/catkin_ws/src/whyconLshape/devel/lib 
+Requires: roscpp geometry_msgs std_msgs message_runtime tf

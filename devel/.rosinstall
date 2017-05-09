@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/pfeiffer/catkin_ws/src/whyconLshape/devel/setup.sh
