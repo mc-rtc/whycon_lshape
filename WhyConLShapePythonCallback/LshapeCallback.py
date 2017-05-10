@@ -1,8 +1,10 @@
 def callbackAugmentedWhyconMarker(self, data):
+    # - assigns tool marker's position and orientation expressed in camera frame
+    # - for half sitting camera frame corresponds to world frame
     self.data = data
     self.ms_since_last_whycon_callback = 0
 
-    for i in data.nrDetectedLshapes
+    for i in data.nrDetectedLshapes[0]
         # check if tool is detected
         if data.LShapesIdxs[i] == 1
             pos = data.LShapesPos[i]
