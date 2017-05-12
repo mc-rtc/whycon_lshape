@@ -2,8 +2,10 @@
 
 #include <augmented_whycon/whycon_marker.h>
 #include <augmented_whycon/mc_torquing_controller_bwFilter.h>
-#include <Eigen/Geometry>
+#include <eigen3/Eigen/Geometry>
 #include <array>
+#include <queue> 
+#include <utility>
 
 namespace augmented_whycon{
 

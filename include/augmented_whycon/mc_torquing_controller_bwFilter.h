@@ -1,7 +1,5 @@
 #pragma once
-#include <mc_control/mc_controller.h>
-#include <mc_control/api.h>
-#include <mc_rbdyn/RobotLoader.h>
+#include <eigen3/Eigen/Core>
 #include <queue>
 #include <utility>
 

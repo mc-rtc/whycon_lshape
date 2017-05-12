@@ -1,6 +1,6 @@
 #include "augmented_whycon_ros.h"
-#include <Eigen/Core>
-#include <Eigen/Geometry>
+#include <eigen3/Eigen/Core>
+#include <eigen3/Eigen/Geometry>
 #include <functional>
 #include <augmented_whycon/AugmentedWhyConMsg.h>
 #include <geometry_msgs/Pose.h>

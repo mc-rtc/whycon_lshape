@@ -63,9 +63,6 @@ std::tuple<int, std::vector<int>, Eigen::Vector2i, std::vector<int>, std::vector
 
 void AugmentedWhyCon::LShapesDetection()
 {
-    // all marker data is given in image frame, transform to camera frame
-    Eigen::Matrix3d camera_R_image;
-    camera_R_image = sva::RotY(-M_PI/2)*sva::RotZ(M_PI/2);
     // this function detects nrLShapes LShape's and then quits
     detectedLShapes = 0;
     idx.clear();
@@ -214,8 +211,8 @@ void AugmentedWhyCon::LShapesDetection()
             rotation_.row(0) = right.transpose();
             rotation_.row(1) = forward.transpose();
             rotation_.row(2) = up.transpose();
-            LShapesOrientation.push_back(Eigen::Quaterniond(rotation_ * camera_R_image.transpose()));
-            LShapesPosition.push_back(camera_R_image * p0);
+            LShapesOrientation.push_back(Eigen::Quaterniond(rotation_));
+            LShapesPosition.push_back(p0);
             L_found_ = true;
             detectedLShapes = detectedLShapes + 1;
             break;

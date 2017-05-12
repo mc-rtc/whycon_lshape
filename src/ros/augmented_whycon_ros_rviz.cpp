@@ -1,5 +1,5 @@
 #include "augmented_whycon_ros_rviz.h"
-#include <Eigen/Core>
+#include <eigen3/Eigen/Core>
 #include <functional>
 
 #include <string>
