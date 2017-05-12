@@ -1,1 +1,0 @@
-/usr/bin/c++  -fPIC -O3 -DNDEBUG -Wall -O4 -march=native -Wfatal-errors   -shared -Wl,-soname,libaugmented_whycon.so -o devel/lib/libaugmented_whycon.so CMakeFiles/augmented_whycon.dir/src/augmented_whycon.cpp.o CMakeFiles/augmented_whycon.dir/src/whycon_marker.cpp.o CMakeFiles/augmented_whycon.dir/src/mc_torquing_controller_bwFilter.cpp.o 
