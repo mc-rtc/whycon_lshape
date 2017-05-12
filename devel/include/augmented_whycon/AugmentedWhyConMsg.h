@@ -17,9 +17,10 @@
 
 #include <std_msgs/Header.h>
 #include <geometry_msgs/Pose.h>
-#include <geometry_msgs/Vector3.h>
-#include <geometry_msgs/Vector3.h>
-#include <geometry_msgs/Vector3.h>
+#include <geometry_msgs/Point.h>
+#include <geometry_msgs/Point.h>
+#include <geometry_msgs/Point.h>
+#include <geometry_msgs/Point.h>
 #include <geometry_msgs/Quaternion.h>
 
 namespace augmented_whycon
@@ -35,6 +36,7 @@ struct AugmentedWhyConMsg_
     , nrDetectedLShapes()
     , idx()
     , LShapesIdxs()
+    , LShapesPos()
     , LShapesOri()  {
     }
   AugmentedWhyConMsg_(const ContainerAllocator& _alloc)
@@ -43,6 +45,7 @@ struct AugmentedWhyConMsg_
     , nrDetectedLShapes(_alloc)
     , idx(_alloc)
     , LShapesIdxs(_alloc)
+    , LShapesPos(_alloc)
     , LShapesOri(_alloc)  {
   (void)_alloc;
     }
@@ -55,14 +58,17 @@ struct AugmentedWhyConMsg_
    typedef std::vector< ::geometry_msgs::Pose_<ContainerAllocator> , typename ContainerAllocator::template rebind< ::geometry_msgs::Pose_<ContainerAllocator> >::other >  _poses_type;
   _poses_type poses;
 
-   typedef std::vector< ::geometry_msgs::Vector3_<ContainerAllocator> , typename ContainerAllocator::template rebind< ::geometry_msgs::Vector3_<ContainerAllocator> >::other >  _nrDetectedLShapes_type;
+   typedef  ::geometry_msgs::Point_<ContainerAllocator>  _nrDetectedLShapes_type;
   _nrDetectedLShapes_type nrDetectedLShapes;
 
-   typedef std::vector< ::geometry_msgs::Vector3_<ContainerAllocator> , typename ContainerAllocator::template rebind< ::geometry_msgs::Vector3_<ContainerAllocator> >::other >  _idx_type;
+   typedef std::vector< ::geometry_msgs::Point_<ContainerAllocator> , typename ContainerAllocator::template rebind< ::geometry_msgs::Point_<ContainerAllocator> >::other >  _idx_type;
   _idx_type idx;
 
-   typedef std::vector< ::geometry_msgs::Vector3_<ContainerAllocator> , typename ContainerAllocator::template rebind< ::geometry_msgs::Vector3_<ContainerAllocator> >::other >  _LShapesIdxs_type;
+   typedef  ::geometry_msgs::Point_<ContainerAllocator>  _LShapesIdxs_type;
   _LShapesIdxs_type LShapesIdxs;
+
+   typedef std::vector< ::geometry_msgs::Point_<ContainerAllocator> , typename ContainerAllocator::template rebind< ::geometry_msgs::Point_<ContainerAllocator> >::other >  _LShapesPos_type;
+  _LShapesPos_type LShapesPos;
 
    typedef std::vector< ::geometry_msgs::Quaternion_<ContainerAllocator> , typename ContainerAllocator::template rebind< ::geometry_msgs::Quaternion_<ContainerAllocator> >::other >  _LShapesOri_type;
   _LShapesOri_type LShapesOri;
@@ -144,12 +150,12 @@ struct MD5Sum< ::augmented_whycon::AugmentedWhyConMsg_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "4b77e673bc19c526df867e458fa38e03";
+    return "c13d1b224cdf6df2f0e74d8c6705856a";
   }
 
   static const char* value(const ::augmented_whycon::AugmentedWhyConMsg_<ContainerAllocator>&) { return value(); }
-  static const uint64_t static_value1 = 0x4b77e673bc19c526ULL;
-  static const uint64_t static_value2 = 0xdf867e458fa38e03ULL;
+  static const uint64_t static_value1 = 0xc13d1b224cdf6df2ULL;
+  static const uint64_t static_value2 = 0xf0e74d8c6705856aULL;
 };
 
 template<class ContainerAllocator>
@@ -170,9 +176,10 @@ struct Definition< ::augmented_whycon::AugmentedWhyConMsg_<ContainerAllocator> >
   {
     return "Header header\n\
 geometry_msgs/Pose[] poses\n\
-geometry_msgs/Vector3[] nrDetectedLShapes\n\
-geometry_msgs/Vector3[] idx\n\
-geometry_msgs/Vector3[] LShapesIdxs\n\
+geometry_msgs/Point nrDetectedLShapes\n\
+geometry_msgs/Point[] idx\n\
+geometry_msgs/Point LShapesIdxs\n\
+geometry_msgs/Point[] LShapesPos\n\
 geometry_msgs/Quaternion[] LShapesOri\n\
 \n\
 ================================================================================\n\
@@ -214,19 +221,6 @@ float64 x\n\
 float64 y\n\
 float64 z\n\
 float64 w\n\
-\n\
-================================================================================\n\
-MSG: geometry_msgs/Vector3\n\
-# This represents a vector in free space. \n\
-# It is only meant to represent a direction. Therefore, it does not\n\
-# make sense to apply a translation to it (e.g., when applying a \n\
-# generic rigid transformation to a Vector3, tf2 will only apply the\n\
-# rotation). If you want your data to be translatable too, use the\n\
-# geometry_msgs/Point message instead.\n\
-\n\
-float64 x\n\
-float64 y\n\
-float64 z\n\
 ";
   }
 
@@ -250,6 +244,7 @@ namespace serialization
       stream.next(m.nrDetectedLShapes);
       stream.next(m.idx);
       stream.next(m.LShapesIdxs);
+      stream.next(m.LShapesPos);
       stream.next(m.LShapesOri);
     }
 
@@ -280,29 +275,27 @@ struct Printer< ::augmented_whycon::AugmentedWhyConMsg_<ContainerAllocator> >
       s << indent;
       Printer< ::geometry_msgs::Pose_<ContainerAllocator> >::stream(s, indent + "    ", v.poses[i]);
     }
-    s << indent << "nrDetectedLShapes[]" << std::endl;
-    for (size_t i = 0; i < v.nrDetectedLShapes.size(); ++i)
-    {
-      s << indent << "  nrDetectedLShapes[" << i << "]: ";
-      s << std::endl;
-      s << indent;
-      Printer< ::geometry_msgs::Vector3_<ContainerAllocator> >::stream(s, indent + "    ", v.nrDetectedLShapes[i]);
-    }
+    s << indent << "nrDetectedLShapes: ";
+    s << std::endl;
+    Printer< ::geometry_msgs::Point_<ContainerAllocator> >::stream(s, indent + "  ", v.nrDetectedLShapes);
     s << indent << "idx[]" << std::endl;
     for (size_t i = 0; i < v.idx.size(); ++i)
     {
       s << indent << "  idx[" << i << "]: ";
       s << std::endl;
       s << indent;
-      Printer< ::geometry_msgs::Vector3_<ContainerAllocator> >::stream(s, indent + "    ", v.idx[i]);
+      Printer< ::geometry_msgs::Point_<ContainerAllocator> >::stream(s, indent + "    ", v.idx[i]);
     }
-    s << indent << "LShapesIdxs[]" << std::endl;
-    for (size_t i = 0; i < v.LShapesIdxs.size(); ++i)
+    s << indent << "LShapesIdxs: ";
+    s << std::endl;
+    Printer< ::geometry_msgs::Point_<ContainerAllocator> >::stream(s, indent + "  ", v.LShapesIdxs);
+    s << indent << "LShapesPos[]" << std::endl;
+    for (size_t i = 0; i < v.LShapesPos.size(); ++i)
     {
-      s << indent << "  LShapesIdxs[" << i << "]: ";
+      s << indent << "  LShapesPos[" << i << "]: ";
       s << std::endl;
       s << indent;
-      Printer< ::geometry_msgs::Vector3_<ContainerAllocator> >::stream(s, indent + "    ", v.LShapesIdxs[i]);
+      Printer< ::geometry_msgs::Point_<ContainerAllocator> >::stream(s, indent + "    ", v.LShapesPos[i]);
     }
     s << indent << "LShapesOri[]" << std::endl;
     for (size_t i = 0; i < v.LShapesOri.size(); ++i)

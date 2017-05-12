@@ -9,6 +9,8 @@
           IDX
           LSHAPESIDXS-VAL
           LSHAPESIDXS
+          LSHAPESPOS-VAL
+          LSHAPESPOS
           LSHAPESORI-VAL
           LSHAPESORI
 ))

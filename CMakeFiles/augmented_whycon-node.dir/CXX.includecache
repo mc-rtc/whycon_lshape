@@ -19,6 +19,10 @@ augmented_whycon/AugmentedWhyConMsg.h
 -
 geometry_msgs/Pose.h
 -
+sstream
+-
+ros/console.h
+-
 ctime
 -
 iostream
@@ -31,6 +35,12 @@ geometry_msgs/PoseArray.h
 -
 augmented_whycon/augmented_whycon.h
 -
+
+/home/pfeiffer/catkin_ws/src/whyconLshape/src/ros/main.cpp
+ros/ros.h
+-
+augmented_whycon_ros.h
+/home/pfeiffer/catkin_ws/src/whyconLshape/src/ros/augmented_whycon_ros.h
 
 /opt/ros/indigo/include/XmlRpcDecl.h
 ros/macros.h
@@ -105,22 +115,6 @@ geometry_msgs/Pose.h
 -
 
 /opt/ros/indigo/include/geometry_msgs/Quaternion.h
-string
--
-vector
--
-map
--
-ros/types.h
--
-ros/serialization.h
--
-ros/builtin_message_traits.h
--
-ros/message_operations.h
--
-
-/opt/ros/indigo/include/geometry_msgs/Vector3.h
 string
 -
 vector
@@ -801,11 +795,13 @@ std_msgs/Header.h
 -
 geometry_msgs/Pose.h
 -
-geometry_msgs/Vector3.h
+geometry_msgs/Point.h
 -
-geometry_msgs/Vector3.h
+geometry_msgs/Point.h
 -
-geometry_msgs/Vector3.h
+geometry_msgs/Point.h
+-
+geometry_msgs/Point.h
 -
 geometry_msgs/Quaternion.h
 -

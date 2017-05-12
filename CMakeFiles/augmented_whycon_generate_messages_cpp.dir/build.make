@@ -53,7 +53,6 @@ CMakeFiles/augmented_whycon_generate_messages_cpp: devel/include/augmented_whyco
 devel/include/augmented_whycon/AugmentedWhyConMsg.h: /opt/ros/indigo/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py
 devel/include/augmented_whycon/AugmentedWhyConMsg.h: msg/AugmentedWhyConMsg.msg
 devel/include/augmented_whycon/AugmentedWhyConMsg.h: /opt/ros/indigo/share/geometry_msgs/cmake/../msg/Point.msg
-devel/include/augmented_whycon/AugmentedWhyConMsg.h: /opt/ros/indigo/share/geometry_msgs/cmake/../msg/Vector3.msg
 devel/include/augmented_whycon/AugmentedWhyConMsg.h: /opt/ros/indigo/share/geometry_msgs/cmake/../msg/Quaternion.msg
 devel/include/augmented_whycon/AugmentedWhyConMsg.h: /opt/ros/indigo/share/std_msgs/cmake/../msg/Header.msg
 devel/include/augmented_whycon/AugmentedWhyConMsg.h: /opt/ros/indigo/share/geometry_msgs/cmake/../msg/Pose.msg

@@ -61,7 +61,7 @@ void AugmentedWhyConROS::publish_results(const std_msgs::Header & header)
 
   geometry_msgs::Point nrDetectedLShapes;
   nrDetectedLShapes.x = std::get<0>(LShapes);
-  msg.nrDetectedLShapes.push_back(nrDetectedLShapes);
+  msg.nrDetectedLShapes = nrDetectedLShapes;
 
   for (int i=0;i<std::get<1>(LShapes).size()/3;i++)
   {
@@ -88,7 +88,7 @@ void AugmentedWhyConROS::publish_results(const std_msgs::Header & header)
     LShapesIdxs.y = std::get<3>(LShapes)[1];
     LShapesIdxs.z = std::get<3>(LShapes)[2];
   }
-  msg.LShapesIdxs.push_back(LShapesIdxs);
+  msg.LShapesIdxs = LShapesIdxs;
 
   for (int i=0;i<std::get<0>(LShapes);i++){
     geometry_msgs::Point LShapesPos;

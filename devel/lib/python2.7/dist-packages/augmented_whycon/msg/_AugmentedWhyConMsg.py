@@ -9,14 +9,15 @@ import geometry_msgs.msg
 import std_msgs.msg
 
 class AugmentedWhyConMsg(genpy.Message):
-  _md5sum = "4b77e673bc19c526df867e458fa38e03"
+  _md5sum = "c13d1b224cdf6df2f0e74d8c6705856a"
   _type = "augmented_whycon/AugmentedWhyConMsg"
   _has_header = True #flag to mark the presence of a Header object
   _full_text = """Header header
 geometry_msgs/Pose[] poses
-geometry_msgs/Vector3[] nrDetectedLShapes
-geometry_msgs/Vector3[] idx
-geometry_msgs/Vector3[] LShapesIdxs
+geometry_msgs/Point nrDetectedLShapes
+geometry_msgs/Point[] idx
+geometry_msgs/Point LShapesIdxs
+geometry_msgs/Point[] LShapesPos
 geometry_msgs/Quaternion[] LShapesOri
 
 ================================================================================
@@ -58,21 +59,9 @@ float64 x
 float64 y
 float64 z
 float64 w
-
-================================================================================
-MSG: geometry_msgs/Vector3
-# This represents a vector in free space. 
-# It is only meant to represent a direction. Therefore, it does not
-# make sense to apply a translation to it (e.g., when applying a 
-# generic rigid transformation to a Vector3, tf2 will only apply the
-# rotation). If you want your data to be translatable too, use the
-# geometry_msgs/Point message instead.
-
-float64 x
-float64 y
-float64 z"""
-  __slots__ = ['header','poses','nrDetectedLShapes','idx','LShapesIdxs','LShapesOri']
-  _slot_types = ['std_msgs/Header','geometry_msgs/Pose[]','geometry_msgs/Vector3[]','geometry_msgs/Vector3[]','geometry_msgs/Vector3[]','geometry_msgs/Quaternion[]']
+"""
+  __slots__ = ['header','poses','nrDetectedLShapes','idx','LShapesIdxs','LShapesPos','LShapesOri']
+  _slot_types = ['std_msgs/Header','geometry_msgs/Pose[]','geometry_msgs/Point','geometry_msgs/Point[]','geometry_msgs/Point','geometry_msgs/Point[]','geometry_msgs/Quaternion[]']
 
   def __init__(self, *args, **kwds):
     """
@@ -82,7 +71,7 @@ float64 z"""
     changes.  You cannot mix in-order arguments and keyword arguments.
 
     The available fields are:
-       header,poses,nrDetectedLShapes,idx,LShapesIdxs,LShapesOri
+       header,poses,nrDetectedLShapes,idx,LShapesIdxs,LShapesPos,LShapesOri
 
     :param args: complete set of field values, in .msg order
     :param kwds: use keyword arguments corresponding to message field names
@@ -96,19 +85,22 @@ float64 z"""
       if self.poses is None:
         self.poses = []
       if self.nrDetectedLShapes is None:
-        self.nrDetectedLShapes = []
+        self.nrDetectedLShapes = geometry_msgs.msg.Point()
       if self.idx is None:
         self.idx = []
       if self.LShapesIdxs is None:
-        self.LShapesIdxs = []
+        self.LShapesIdxs = geometry_msgs.msg.Point()
+      if self.LShapesPos is None:
+        self.LShapesPos = []
       if self.LShapesOri is None:
         self.LShapesOri = []
     else:
       self.header = std_msgs.msg.Header()
       self.poses = []
-      self.nrDetectedLShapes = []
+      self.nrDetectedLShapes = geometry_msgs.msg.Point()
       self.idx = []
-      self.LShapesIdxs = []
+      self.LShapesIdxs = geometry_msgs.msg.Point()
+      self.LShapesPos = []
       self.LShapesOri = []
 
   def _get_types(self):
@@ -143,19 +135,18 @@ float64 z"""
         _v2 = val1.orientation
         _x = _v2
         buff.write(_struct_4d.pack(_x.x, _x.y, _x.z, _x.w))
-      length = len(self.nrDetectedLShapes)
-      buff.write(_struct_I.pack(length))
-      for val1 in self.nrDetectedLShapes:
-        _x = val1
-        buff.write(_struct_3d.pack(_x.x, _x.y, _x.z))
+      _x = self
+      buff.write(_struct_3d.pack(_x.nrDetectedLShapes.x, _x.nrDetectedLShapes.y, _x.nrDetectedLShapes.z))
       length = len(self.idx)
       buff.write(_struct_I.pack(length))
       for val1 in self.idx:
         _x = val1
         buff.write(_struct_3d.pack(_x.x, _x.y, _x.z))
-      length = len(self.LShapesIdxs)
+      _x = self
+      buff.write(_struct_3d.pack(_x.LShapesIdxs.x, _x.LShapesIdxs.y, _x.LShapesIdxs.z))
+      length = len(self.LShapesPos)
       buff.write(_struct_I.pack(length))
-      for val1 in self.LShapesIdxs:
+      for val1 in self.LShapesPos:
         _x = val1
         buff.write(_struct_3d.pack(_x.x, _x.y, _x.z))
       length = len(self.LShapesOri)
@@ -177,11 +168,13 @@ float64 z"""
       if self.poses is None:
         self.poses = None
       if self.nrDetectedLShapes is None:
-        self.nrDetectedLShapes = None
+        self.nrDetectedLShapes = geometry_msgs.msg.Point()
       if self.idx is None:
         self.idx = None
       if self.LShapesIdxs is None:
-        self.LShapesIdxs = None
+        self.LShapesIdxs = geometry_msgs.msg.Point()
+      if self.LShapesPos is None:
+        self.LShapesPos = None
       if self.LShapesOri is None:
         self.LShapesOri = None
       end = 0
@@ -215,39 +208,36 @@ float64 z"""
         end += 32
         (_x.x, _x.y, _x.z, _x.w,) = _struct_4d.unpack(str[start:end])
         self.poses.append(val1)
+      _x = self
       start = end
-      end += 4
-      (length,) = _struct_I.unpack(str[start:end])
-      self.nrDetectedLShapes = []
-      for i in range(0, length):
-        val1 = geometry_msgs.msg.Vector3()
-        _x = val1
-        start = end
-        end += 24
-        (_x.x, _x.y, _x.z,) = _struct_3d.unpack(str[start:end])
-        self.nrDetectedLShapes.append(val1)
+      end += 24
+      (_x.nrDetectedLShapes.x, _x.nrDetectedLShapes.y, _x.nrDetectedLShapes.z,) = _struct_3d.unpack(str[start:end])
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])
       self.idx = []
       for i in range(0, length):
-        val1 = geometry_msgs.msg.Vector3()
+        val1 = geometry_msgs.msg.Point()
         _x = val1
         start = end
         end += 24
         (_x.x, _x.y, _x.z,) = _struct_3d.unpack(str[start:end])
         self.idx.append(val1)
+      _x = self
+      start = end
+      end += 24
+      (_x.LShapesIdxs.x, _x.LShapesIdxs.y, _x.LShapesIdxs.z,) = _struct_3d.unpack(str[start:end])
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])
-      self.LShapesIdxs = []
+      self.LShapesPos = []
       for i in range(0, length):
-        val1 = geometry_msgs.msg.Vector3()
+        val1 = geometry_msgs.msg.Point()
         _x = val1
         start = end
         end += 24
         (_x.x, _x.y, _x.z,) = _struct_3d.unpack(str[start:end])
-        self.LShapesIdxs.append(val1)
+        self.LShapesPos.append(val1)
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])
@@ -291,19 +281,18 @@ float64 z"""
         _v6 = val1.orientation
         _x = _v6
         buff.write(_struct_4d.pack(_x.x, _x.y, _x.z, _x.w))
-      length = len(self.nrDetectedLShapes)
-      buff.write(_struct_I.pack(length))
-      for val1 in self.nrDetectedLShapes:
-        _x = val1
-        buff.write(_struct_3d.pack(_x.x, _x.y, _x.z))
+      _x = self
+      buff.write(_struct_3d.pack(_x.nrDetectedLShapes.x, _x.nrDetectedLShapes.y, _x.nrDetectedLShapes.z))
       length = len(self.idx)
       buff.write(_struct_I.pack(length))
       for val1 in self.idx:
         _x = val1
         buff.write(_struct_3d.pack(_x.x, _x.y, _x.z))
-      length = len(self.LShapesIdxs)
+      _x = self
+      buff.write(_struct_3d.pack(_x.LShapesIdxs.x, _x.LShapesIdxs.y, _x.LShapesIdxs.z))
+      length = len(self.LShapesPos)
       buff.write(_struct_I.pack(length))
-      for val1 in self.LShapesIdxs:
+      for val1 in self.LShapesPos:
         _x = val1
         buff.write(_struct_3d.pack(_x.x, _x.y, _x.z))
       length = len(self.LShapesOri)
@@ -326,11 +315,13 @@ float64 z"""
       if self.poses is None:
         self.poses = None
       if self.nrDetectedLShapes is None:
-        self.nrDetectedLShapes = None
+        self.nrDetectedLShapes = geometry_msgs.msg.Point()
       if self.idx is None:
         self.idx = None
       if self.LShapesIdxs is None:
-        self.LShapesIdxs = None
+        self.LShapesIdxs = geometry_msgs.msg.Point()
+      if self.LShapesPos is None:
+        self.LShapesPos = None
       if self.LShapesOri is None:
         self.LShapesOri = None
       end = 0
@@ -364,39 +355,36 @@ float64 z"""
         end += 32
         (_x.x, _x.y, _x.z, _x.w,) = _struct_4d.unpack(str[start:end])
         self.poses.append(val1)
+      _x = self
       start = end
-      end += 4
-      (length,) = _struct_I.unpack(str[start:end])
-      self.nrDetectedLShapes = []
-      for i in range(0, length):
-        val1 = geometry_msgs.msg.Vector3()
-        _x = val1
-        start = end
-        end += 24
-        (_x.x, _x.y, _x.z,) = _struct_3d.unpack(str[start:end])
-        self.nrDetectedLShapes.append(val1)
+      end += 24
+      (_x.nrDetectedLShapes.x, _x.nrDetectedLShapes.y, _x.nrDetectedLShapes.z,) = _struct_3d.unpack(str[start:end])
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])
       self.idx = []
       for i in range(0, length):
-        val1 = geometry_msgs.msg.Vector3()
+        val1 = geometry_msgs.msg.Point()
         _x = val1
         start = end
         end += 24
         (_x.x, _x.y, _x.z,) = _struct_3d.unpack(str[start:end])
         self.idx.append(val1)
+      _x = self
+      start = end
+      end += 24
+      (_x.LShapesIdxs.x, _x.LShapesIdxs.y, _x.LShapesIdxs.z,) = _struct_3d.unpack(str[start:end])
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])
-      self.LShapesIdxs = []
+      self.LShapesPos = []
       for i in range(0, length):
-        val1 = geometry_msgs.msg.Vector3()
+        val1 = geometry_msgs.msg.Point()
         _x = val1
         start = end
         end += 24
         (_x.x, _x.y, _x.z,) = _struct_3d.unpack(str[start:end])
-        self.LShapesIdxs.append(val1)
+        self.LShapesPos.append(val1)
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])

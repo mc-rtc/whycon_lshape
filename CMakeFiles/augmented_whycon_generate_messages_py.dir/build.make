@@ -54,7 +54,6 @@ CMakeFiles/augmented_whycon_generate_messages_py: devel/lib/python2.7/dist-packa
 devel/lib/python2.7/dist-packages/augmented_whycon/msg/_AugmentedWhyConMsg.py: /opt/ros/indigo/share/genpy/cmake/../../../lib/genpy/genmsg_py.py
 devel/lib/python2.7/dist-packages/augmented_whycon/msg/_AugmentedWhyConMsg.py: msg/AugmentedWhyConMsg.msg
 devel/lib/python2.7/dist-packages/augmented_whycon/msg/_AugmentedWhyConMsg.py: /opt/ros/indigo/share/geometry_msgs/cmake/../msg/Point.msg
-devel/lib/python2.7/dist-packages/augmented_whycon/msg/_AugmentedWhyConMsg.py: /opt/ros/indigo/share/geometry_msgs/cmake/../msg/Vector3.msg
 devel/lib/python2.7/dist-packages/augmented_whycon/msg/_AugmentedWhyConMsg.py: /opt/ros/indigo/share/geometry_msgs/cmake/../msg/Quaternion.msg
 devel/lib/python2.7/dist-packages/augmented_whycon/msg/_AugmentedWhyConMsg.py: /opt/ros/indigo/share/std_msgs/cmake/../msg/Header.msg
 devel/lib/python2.7/dist-packages/augmented_whycon/msg/_AugmentedWhyConMsg.py: /opt/ros/indigo/share/geometry_msgs/cmake/../msg/Pose.msg

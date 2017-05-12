@@ -9,7 +9,6 @@ CMakeFiles/augmented_whycon-node.dir/src/ros/augmented_whycon_ros.cpp.o: /opt/ro
 CMakeFiles/augmented_whycon-node.dir/src/ros/augmented_whycon_ros.cpp.o: /opt/ros/indigo/include/geometry_msgs/Pose.h
 CMakeFiles/augmented_whycon-node.dir/src/ros/augmented_whycon_ros.cpp.o: /opt/ros/indigo/include/geometry_msgs/PoseArray.h
 CMakeFiles/augmented_whycon-node.dir/src/ros/augmented_whycon_ros.cpp.o: /opt/ros/indigo/include/geometry_msgs/Quaternion.h
-CMakeFiles/augmented_whycon-node.dir/src/ros/augmented_whycon_ros.cpp.o: /opt/ros/indigo/include/geometry_msgs/Vector3.h
 CMakeFiles/augmented_whycon-node.dir/src/ros/augmented_whycon_ros.cpp.o: /opt/ros/indigo/include/ros/advertise_options.h
 CMakeFiles/augmented_whycon-node.dir/src/ros/augmented_whycon_ros.cpp.o: /opt/ros/indigo/include/ros/advertise_service_options.h
 CMakeFiles/augmented_whycon-node.dir/src/ros/augmented_whycon_ros.cpp.o: /opt/ros/indigo/include/ros/assert.h

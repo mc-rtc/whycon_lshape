@@ -378,9 +378,9 @@ clean: CMakeFiles/augmented_whycon_gencpp.dir/clean
 # Target rules for target CMakeFiles/augmented_whycon_generate_messages.dir
 
 # All Build rule for target.
+CMakeFiles/augmented_whycon_generate_messages.dir/all: CMakeFiles/augmented_whycon_generate_messages_py.dir/all
 CMakeFiles/augmented_whycon_generate_messages.dir/all: CMakeFiles/augmented_whycon_generate_messages_cpp.dir/all
 CMakeFiles/augmented_whycon_generate_messages.dir/all: CMakeFiles/augmented_whycon_generate_messages_lisp.dir/all
-CMakeFiles/augmented_whycon_generate_messages.dir/all: CMakeFiles/augmented_whycon_generate_messages_py.dir/all
 	$(MAKE) -f CMakeFiles/augmented_whycon_generate_messages.dir/build.make CMakeFiles/augmented_whycon_generate_messages.dir/depend
 	$(MAKE) -f CMakeFiles/augmented_whycon_generate_messages.dir/build.make CMakeFiles/augmented_whycon_generate_messages.dir/build
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/pfeiffer/catkin_ws/src/whyconLshape/CMakeFiles 

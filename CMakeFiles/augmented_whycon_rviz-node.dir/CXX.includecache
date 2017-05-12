@@ -34,6 +34,12 @@ visualization_msgs/MarkerArray.h
 tf/transform_broadcaster.h
 -
 
+/home/pfeiffer/catkin_ws/src/whyconLshape/src/ros/main_rviz.cpp
+ros/ros.h
+-
+augmented_whycon_ros_rviz.h
+/home/pfeiffer/catkin_ws/src/whyconLshape/src/ros/augmented_whycon_ros_rviz.h
+
 /opt/ros/indigo/include/XmlRpcDecl.h
 ros/macros.h
 -
@@ -1291,11 +1297,13 @@ std_msgs/Header.h
 -
 geometry_msgs/Pose.h
 -
-geometry_msgs/Vector3.h
+geometry_msgs/Point.h
 -
-geometry_msgs/Vector3.h
+geometry_msgs/Point.h
 -
-geometry_msgs/Vector3.h
+geometry_msgs/Point.h
+-
+geometry_msgs/Point.h
 -
 geometry_msgs/Quaternion.h
 -

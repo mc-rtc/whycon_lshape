@@ -39,9 +39,9 @@ private:
   bool markersInitialized[4] = {false, false, false, false};
   int nrLShapes = 4;
   double wingLengthLShapeRail = 0.08;
-  double wingLengthLShapeTool = 0.05;
-  double wingLengthLShapeWall_0 = 0.06;
-  double wingLengthLShapeWall_1 = 0.07;
+  double wingLengthLShapeTool = 0.04;
+  double wingLengthLShapeWall_0 = 0.05;
+  double wingLengthLShapeWall_1 = 0.06;
   double wingLengthLShapeTolerance = 0.005;
   bwFilter * bwFiltRailU;
   bwFilter * bwFiltRailV;
