@@ -1,7 +1,7 @@
 Header header
 geometry_msgs/Pose[] poses
-geometry_msgs/Point nrDetectedLShapes
+int32 nrDetectedLShapes
 geometry_msgs/Point[] idx
-geometry_msgs/Point LShapesIdxs
+int32[] LShapesIdxs
 geometry_msgs/Point[] LShapesPos
 geometry_msgs/Quaternion[] LShapesOri

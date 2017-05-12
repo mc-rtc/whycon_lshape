@@ -59,11 +59,9 @@ void AugmentedWhyConROS::publish_results(const std_msgs::Header & header)
   }
   std::tuple<int, std::vector<int>, Eigen::Vector2i, std::vector<int>, std::vector<Eigen::Vector3d>, std::vector<Eigen::Quaterniond> > LShapes = augmentedWhyCon_.LShapeDetector();
 
-  geometry_msgs::Point nrDetectedLShapes;
-  nrDetectedLShapes.x = std::get<0>(LShapes);
-  msg.nrDetectedLShapes = nrDetectedLShapes;
+  msg.nrDetectedLShapes = std::get<0>(LShapes);
 
-  for (int i=0;i<std::get<1>(LShapes).size()/3;i++)
+  for (int i=0;i<std::get<0>(LShapes);i++)
   {
     geometry_msgs::Point idx;
     idx.x = std::get<1>(LShapes)[i*3+0];
@@ -72,23 +70,9 @@ void AugmentedWhyConROS::publish_results(const std_msgs::Header & header)
     msg.idx.push_back(idx);
   }
 
-  geometry_msgs::Point LShapesIdxs;
-  if (std::get<3>(LShapes).size() == 1){
-    LShapesIdxs.x = std::get<3>(LShapes)[0];
-    LShapesIdxs.y = 999;
-    LShapesIdxs.z = 999;
+  for (int i=0;i<std::get<0>(LShapes);i++){
+    msg.LShapesIdxs.push_back(std::get<3>(LShapes)[i]);
   }
-  else if (std::get<3>(LShapes).size() == 2){
-    LShapesIdxs.x = std::get<3>(LShapes)[0];
-    LShapesIdxs.y = std::get<3>(LShapes)[1];
-    LShapesIdxs.z = 999;
-  }
-  else if (std::get<3>(LShapes).size() == 3){
-    LShapesIdxs.x = std::get<3>(LShapes)[0];
-    LShapesIdxs.y = std::get<3>(LShapes)[1];
-    LShapesIdxs.z = std::get<3>(LShapes)[2];
-  }
-  msg.LShapesIdxs = LShapesIdxs;
 
   for (int i=0;i<std::get<0>(LShapes);i++){
     geometry_msgs::Point LShapesPos;
