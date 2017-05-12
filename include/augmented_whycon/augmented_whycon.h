@@ -32,10 +32,13 @@ private:
 
 private:
   std::vector<WhyConMarker> WhyConMarkers_;
+  unsigned int nrMarkersWhycon;
   int detectedLShapes;
   std::vector<int> idx;
   Eigen::Vector2i ToolWallIdx;
   std::vector<int> LShapesIdxs;
+  Eigen::MatrixXd MarkersPositionPrev;
+  Eigen::VectorXi frozen;
   std::vector<Eigen::Vector3d> LShapesPosition;
   std::vector<Eigen::Quaterniond> LShapesOrientation;
   bool markersInitialized[4] = {false, false, false, false};
@@ -53,6 +56,7 @@ private:
   bwFilter * bwFiltWallV;
   bwFilter * bwFiltWallInclU;
   bwFilter * bwFiltWallInclV;
+  int cntrRun = 0;
 };
 
 }

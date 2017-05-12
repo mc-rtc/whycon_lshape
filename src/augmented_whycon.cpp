@@ -29,6 +29,12 @@ void AugmentedWhyCon::update(double timestamp,
   WhyConMarkers_.clear();
   std::list<Eigen::Vector3d>::const_iterator it_marker_position;
   std::list<Eigen::Quaterniond>::const_iterator it_marker_orientation;
+  if (cntrRun == 0){
+    nrMarkersWhycon = (int)markers_position.size();
+    MarkersPositionPrev = Eigen::MatrixXd::Zero(3,nrMarkersWhycon);
+    frozen = Eigen::VectorXi::Zero(nrMarkersWhycon);
+    ROS_ERROR_STREAM("WhyCon works with "<< nrMarkersWhycon<<" markers");
+  }
   for (unsigned int i = 0; i < markers_position.size(); ++i)
   {
     it_marker_position = markers_position.begin();
@@ -39,6 +45,7 @@ void AugmentedWhyCon::update(double timestamp,
       WhyConMarker(timestamp, (*it_marker_position), (*it_marker_orientation)));
   }
   LShapesDetection();
+  cntrRun += 1;
 }
 
 unsigned int AugmentedWhyCon::WhyConMarkersNr()
@@ -72,18 +79,28 @@ void AugmentedWhyCon::LShapesDetection()
     bool L_found[4] = {false, false, false, false};
     std::vector<Eigen::Vector3d> LVectors;
     // try all points as the knot point
-    for (unsigned int i=0;i<WhyConMarkers_.size();i++){
+    for (unsigned int i=0;i<nrMarkersWhycon;i++){
       Eigen::Vector3d p0;
       LVectors.clear();
       p0 = WhyConMarkers_[i].position();
       // compute all vectors pointing to the knot point
-      for(unsigned int j=0;j<WhyConMarkers_.size();j++){
+      for(unsigned int j=0;j<nrMarkersWhycon;j++){
         Eigen::Vector3d interPos;
         interPos = WhyConMarkers_[j].position();
         if (i!=j){
           LVectors.push_back(interPos - p0);
         }
+        // check if there are any frozen markers
+        if (i == 0 && cntrRun > 0){
+          if ((WhyConMarkers_[j].position() - MarkersPositionPrev.col(j)).lpNorm<Eigen::Infinity>()<1e-8){
+            frozen[j] = 1;
+            ROS_ERROR_STREAM("frozen: "<<j<<" "<<(WhyConMarkers_[j].position() - MarkersPositionPrev.col(j)).lpNorm<Eigen::Infinity>()<<" "<<(WhyConMarkers_[j].position() - MarkersPositionPrev.col(j)).transpose()<<" "<<MarkersPositionPrev.col(j).transpose()<<" "<<WhyConMarkers_[j].position().transpose());
+          }
+          else frozen[j] = 0;
+          MarkersPositionPrev.col(j) = WhyConMarkers_[j].position();
+        }
       }
+      ROS_ERROR_STREAM("frozen: "<<frozen.transpose());
       // check if any of these vectors are orthogonal to each other, not optimized
       bool L_found_ = false;
       for(unsigned int j=0;j<LVectors.size();j++){
@@ -105,6 +122,11 @@ void AugmentedWhyCon::LShapesDetection()
             int idx_x, idx_y;
             idx_x = j;
             idx_y = k;
+            // check if there are any frozen markers, if so quit
+            if (frozen[idx_[0]] == 1 || frozen[idx_[1]] == 1 || frozen[idx_[2]] == 1){
+              ROS_ERROR_STREAM("frozen: "<<frozen.transpose());
+              continue;
+            }
             // calculate unfiltered normal of LShape in order to get knowledge about x- and y- axis, in order to attribute to the correct filter memory
             Eigen::Vector3d normal;
             normal = (LVectors[idx_x]/LVectors[idx_x].norm()).cross(LVectors[idx_y]/LVectors[idx_y].norm());
