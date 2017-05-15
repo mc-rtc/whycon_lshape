@@ -94,13 +94,13 @@ void AugmentedWhyCon::LShapesDetection()
         if (i == 0 && cntrRun > 0){
           if ((WhyConMarkers_[j].position() - MarkersPositionPrev.col(j)).lpNorm<Eigen::Infinity>()<1e-8){
             frozen[j] = 1;
-            ROS_ERROR_STREAM("frozen: "<<j<<" "<<(WhyConMarkers_[j].position() - MarkersPositionPrev.col(j)).lpNorm<Eigen::Infinity>()<<" "<<(WhyConMarkers_[j].position() - MarkersPositionPrev.col(j)).transpose()<<" "<<MarkersPositionPrev.col(j).transpose()<<" "<<WhyConMarkers_[j].position().transpose());
+            // ROS_ERROR_STREAM("frozen: "<<j<<" "<<(WhyConMarkers_[j].position() - MarkersPositionPrev.col(j)).lpNorm<Eigen::Infinity>()<<" "<<(WhyConMarkers_[j].position() - MarkersPositionPrev.col(j)).transpose()<<" "<<MarkersPositionPrev.col(j).transpose()<<" "<<WhyConMarkers_[j].position().transpose());
           }
           else frozen[j] = 0;
           MarkersPositionPrev.col(j) = WhyConMarkers_[j].position();
         }
       }
-      ROS_ERROR_STREAM("frozen: "<<frozen.transpose());
+      // ROS_ERROR_STREAM("frozen: "<<frozen.transpose());
       // check if any of these vectors are orthogonal to each other, not optimized
       bool L_found_ = false;
       for(unsigned int j=0;j<LVectors.size();j++){
@@ -124,7 +124,7 @@ void AugmentedWhyCon::LShapesDetection()
             idx_y = k;
             // check if there are any frozen markers, if so quit
             if (frozen[idx_[0]] == 1 || frozen[idx_[1]] == 1 || frozen[idx_[2]] == 1){
-              ROS_ERROR_STREAM("frozen: "<<frozen.transpose());
+              // ROS_ERROR_STREAM("frozen: "<<frozen.transpose());
               continue;
             }
             // calculate unfiltered normal of LShape in order to get knowledge about x- and y- axis, in order to attribute to the correct filter memory
