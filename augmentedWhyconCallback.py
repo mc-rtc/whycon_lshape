@@ -1,3 +1,13 @@
+import rospy
+
+from geometry_msgs.msg import PoseArray
+from augmented_whycon.msg import AugmentedWhyConMsg
+
+ def __init__(self, rm, dt):
+    rospy.init_node('rtc_demo_breaker')
+    rospy.Subscriber("/augmented_whycon/augmented_whycon", AugmentedWhyConMsg,
+          self.callbackAugmentedWhyconMarker)
+
 def callbackAugmentedWhyconMarker(self, data):
     self.data = data
     self.ms_since_last_whycon_callback = 0

@@ -57,6 +57,7 @@ void AugmentedWhyConROS::publish_results(const std_msgs::Header & header)
     pose.position = point;
     msg.poses.push_back(pose);
   }
+
   std::tuple<int, std::vector<int>, Eigen::Vector2i, std::vector<int>, std::vector<Eigen::Vector3d>, std::vector<Eigen::Quaterniond> > LShapes = augmentedWhyCon_.LShapeDetector();
 
   msg.nrDetectedLShapes = std::get<0>(LShapes);
