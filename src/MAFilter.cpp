@@ -1,5 +1,7 @@
 #include <whycon_lshape/MAFilter.h>
 
+#include <iostream>
+
 namespace whycon_lshape
 {
 
@@ -19,13 +21,14 @@ namespace whycon_lshape
     window_prev = window.col(cntr);
     window.col(cntr) = x;
     x = window.rowwise().sum() / windowSize;
-    cntr = cntr + 1 % windowSize;
+    cntr = (cntr + 1) % windowSize;
   }
 
   void MAFilter::resetLastFilterStep()
   {
-    cntr = cntr - 1 % windowSize;
+    if(cntr == 0) { cntr = windowSize - 1; }
+    else { cntr = cntr - 1; }
     window.col(cntr) = window_prev;
-    cntr = cntr + 1 % windowSize;
+    cntr = (cntr + 1) % windowSize;
   }
 }
