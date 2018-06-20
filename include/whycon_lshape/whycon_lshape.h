@@ -1,7 +1,7 @@
 #pragma once
 
 #include <whycon_lshape/whycon_marker.h>
-#include <whycon_lshape/BWFilter.h>
+#include <whycon_lshape/MAFilter.h>
 #include <Eigen/Geometry>
 #include <array>
 #include <queue>
@@ -49,14 +49,14 @@ private:
   double wingLengthLShapeWall_0 = 0.05;
   double wingLengthLShapeWall_1 = 0.06;
   double wingLengthLShapeTolerance = 0.005;
-  BWFilter * bwFiltRailU;
-  BWFilter * bwFiltRailV;
-  BWFilter * bwFiltToolU;
-  BWFilter * bwFiltToolV;
-  BWFilter * bwFiltWallU;
-  BWFilter * bwFiltWallV;
-  BWFilter * bwFiltWallInclU;
-  BWFilter * bwFiltWallInclV;
+  MAFilter maFiltRailU;
+  MAFilter maFiltRailV;
+  MAFilter maFiltToolU;
+  MAFilter maFiltToolV;
+  MAFilter maFiltWallU;
+  MAFilter maFiltWallV;
+  MAFilter maFiltWallInclU;
+  MAFilter maFiltWallInclV;
   int cntrRun = 0;
 };
 

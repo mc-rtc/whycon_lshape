@@ -34,7 +34,7 @@ include_directories(
   ${catkin_INCLUDE_DIRS} include ${EIGEN3_INCLUDE_DIRS}
 )
 
-add_library(whycon_lshape SHARED src/whycon_lshape.cpp src/whycon_marker.cpp src/BWFilter.cpp)
+add_library(whycon_lshape SHARED src/whycon_lshape.cpp src/whycon_marker.cpp src/MAFilter.cpp)
 
 add_executable(whycon_lshape-node src/ros/main.cpp src/ros/whycon_lshape_ros.cpp)
 set_target_properties(whycon_lshape-node PROPERTIES OUTPUT_NAME whycon_lshape)

@@ -10,17 +10,18 @@
 namespace whycon_lshape
 {
 
+namespace { static int window_size = 25; }
+
 WhyConLShape::WhyConLShape()
+: maFiltRailU(window_size),
+  maFiltRailV(window_size),
+  maFiltToolU(window_size),
+  maFiltToolV(window_size),
+  maFiltWallU(window_size),
+  maFiltWallV(window_size),
+  maFiltWallInclU(window_size),
+  maFiltWallInclV(window_size)
 {
-  int MA = 25;
-  bwFiltRailU = new BWFilter(4,10,1.0, MA);
-  bwFiltRailV = new BWFilter(4,10,1.0, MA);
-  bwFiltToolU = new BWFilter(4,10,1.0, MA);
-  bwFiltToolV = new BWFilter(4,10,1.0, MA);
-  bwFiltWallU = new BWFilter(4,10,1.0, MA);
-  bwFiltWallV = new BWFilter(4,10,1.0, MA);
-  bwFiltWallInclU = new BWFilter(4,10,1.0, MA);
-  bwFiltWallInclV = new BWFilter(4,10,1.0, MA);
 }
 
 void WhyConLShape::update(double timestamp,
@@ -156,26 +157,26 @@ void WhyConLShape::LShapesDetection()
             if (fabs(u.norm() - wingLengthLShapeRail)<wingLengthLShapeTolerance && fabs(v.norm() - wingLengthLShapeRail)<wingLengthLShapeTolerance){
               if (markersInitialized[0] == false){
                 markersInitialized[0] = true;
-                bwFiltRailU->initMA_window(u);
-                bwFiltRailV->initMA_window(v);
+                maFiltRailU.init(u);
+                maFiltRailV.init(v);
               }
               if (L_found[0] == false){
                 L_found[0] = true;
-                u = bwFiltRailU->filterMA(u);
-                v = bwFiltRailV->filterMA(v);
+                maFiltRailU.filter(u);
+                maFiltRailV.filter(v);
               }
               LShapesIdxs.push_back(0);
             }
             else if (fabs(u.norm() - wingLengthLShapeTool)<wingLengthLShapeTolerance && fabs(v.norm() - wingLengthLShapeTool)<wingLengthLShapeTolerance){
               if (markersInitialized[1] == false){
                 markersInitialized[1] = true;
-                bwFiltToolU->initMA_window(u);
-                bwFiltToolV->initMA_window(v);
+                maFiltToolU.init(u);
+                maFiltToolV.init(v);
               }
               if (L_found[1] == false){
                 L_found[1] = true;
-                u = bwFiltToolU->filterMA(u);
-                v = bwFiltToolV->filterMA(v);
+                maFiltToolU.filter(u);
+                maFiltToolV.filter(v);
               }
               ToolWallIdx[0] = detectedLShapes;
               LShapesIdxs.push_back(1);
@@ -183,13 +184,13 @@ void WhyConLShape::LShapesDetection()
             else if (fabs(u.norm() - wingLengthLShapeWall_0)<wingLengthLShapeTolerance && fabs(v.norm() - wingLengthLShapeWall_0)<wingLengthLShapeTolerance){
               if (markersInitialized[2] == false){
                 markersInitialized[2] = true;
-                bwFiltWallU->initMA_window(u);
-                bwFiltWallV->initMA_window(v);
+                maFiltWallU.init(u);
+                maFiltWallV.init(v);
               }
               if (L_found[2] == false){
                 L_found[2] = true;
-                u = bwFiltWallU->filterMA(u);
-                v = bwFiltWallV->filterMA(v);
+                maFiltWallU.filter(u);
+                maFiltWallV.filter(v);
               }
               ToolWallIdx[1] = detectedLShapes;
               LShapesIdxs.push_back(2);
@@ -197,13 +198,13 @@ void WhyConLShape::LShapesDetection()
             else if (fabs(u.norm() - wingLengthLShapeWall_1)<wingLengthLShapeTolerance && fabs(v.norm() - wingLengthLShapeWall_1)<wingLengthLShapeTolerance){
               if (markersInitialized[3] == false){
                 markersInitialized[3] = true;
-                bwFiltWallInclU->initMA_window(u);
-                bwFiltWallInclV->initMA_window(v);
+                maFiltWallInclU.init(u);
+                maFiltWallInclV.init(v);
               }
               if (L_found[3] == false){
                 L_found[3] = true;
-                u = bwFiltWallInclU->filterMA(u);
-                v = bwFiltWallInclV->filterMA(v);
+                maFiltWallInclU.filter(u);
+                maFiltWallInclV.filter(v);
               }
               LShapesIdxs.push_back(3);
             }
@@ -253,20 +254,20 @@ void WhyConLShape::LShapesDetection()
           detectedLShapes = 0;
           // reset filter
           if (L_found[0] == true){
-            u_reset = bwFiltRailU->resetLastFilterStep();
-            u_reset = bwFiltRailV->resetLastFilterStep();
+            maFiltRailU.resetLastFilterStep();
+            maFiltRailV.resetLastFilterStep();
           }
           if (L_found[1] == true){
-            u_reset = bwFiltToolU->resetLastFilterStep();
-            u_reset = bwFiltToolV->resetLastFilterStep();
+            maFiltToolU.resetLastFilterStep();
+            maFiltToolV.resetLastFilterStep();
           }
           if (L_found[2] == true){
-            u_reset = bwFiltWallU->resetLastFilterStep();
-            u_reset = bwFiltWallV->resetLastFilterStep();
+            maFiltWallU.resetLastFilterStep();
+            maFiltWallV.resetLastFilterStep();
           }
           if (L_found[3] == true){
-            u_reset = bwFiltWallInclU->resetLastFilterStep();
-            u_reset = bwFiltWallInclV->resetLastFilterStep();
+            maFiltWallInclU.resetLastFilterStep();
+            maFiltWallInclV.resetLastFilterStep();
           }
           break;
         }
