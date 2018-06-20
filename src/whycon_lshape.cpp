@@ -1,4 +1,4 @@
-#include <augmented_whycon/augmented_whycon.h>
+#include <whycon_lshape/whycon_lshape.h>
 #include <algorithm>
 #include <map>
 #include <cmath>
@@ -7,22 +7,23 @@
 
 #include <iostream>
 
-namespace augmented_whycon{
+namespace whycon_lshape
+{
 
-AugmentedWhyCon::AugmentedWhyCon()
+WhyConLShape::WhyConLShape()
 {
   int MA = 25;
-  bwFiltRailU = new bwFilter(4,10,1.0, MA);
-  bwFiltRailV = new bwFilter(4,10,1.0, MA);
-  bwFiltToolU = new bwFilter(4,10,1.0, MA);
-  bwFiltToolV = new bwFilter(4,10,1.0, MA);
-  bwFiltWallU = new bwFilter(4,10,1.0, MA);
-  bwFiltWallV = new bwFilter(4,10,1.0, MA);
-  bwFiltWallInclU = new bwFilter(4,10,1.0, MA);
-  bwFiltWallInclV = new bwFilter(4,10,1.0, MA);
+  bwFiltRailU = new BWFilter(4,10,1.0, MA);
+  bwFiltRailV = new BWFilter(4,10,1.0, MA);
+  bwFiltToolU = new BWFilter(4,10,1.0, MA);
+  bwFiltToolV = new BWFilter(4,10,1.0, MA);
+  bwFiltWallU = new BWFilter(4,10,1.0, MA);
+  bwFiltWallV = new BWFilter(4,10,1.0, MA);
+  bwFiltWallInclU = new BWFilter(4,10,1.0, MA);
+  bwFiltWallInclV = new BWFilter(4,10,1.0, MA);
 }
 
-void AugmentedWhyCon::update(double timestamp,
+void WhyConLShape::update(double timestamp,
   const std::list<Eigen::Vector3d> & markers_position,
     const std::list<Eigen::Quaterniond> & markers_orientation)
 {
@@ -48,27 +49,27 @@ void AugmentedWhyCon::update(double timestamp,
   cntrRun += 1;
 }
 
-unsigned int AugmentedWhyCon::WhyConMarkersNr()
+unsigned int WhyConLShape::WhyConMarkersNr()
 {
   return WhyConMarkers_.size();
 }
 
-unsigned int AugmentedWhyCon::LShapesNr()
+unsigned int WhyConLShape::LShapesNr()
 {
   return LShapesIdxs.size();
 }
 
-const WhyConMarker & AugmentedWhyCon::iWhyConMarker(unsigned int i)
+const WhyConMarker & WhyConLShape::iWhyConMarker(unsigned int i)
 {
   return WhyConMarkers_[i];
 }
 
-std::tuple<int, std::vector<int>, Eigen::Vector2i, std::vector<int>, std::vector<Eigen::Vector3d>, std::vector<Eigen::Quaterniond> > AugmentedWhyCon::LShapeDetector()
+std::tuple<int, std::vector<int>, Eigen::Vector2i, std::vector<int>, std::vector<Eigen::Vector3d>, std::vector<Eigen::Quaterniond> > WhyConLShape::LShapeDetector()
 {
   return std::make_tuple(detectedLShapes, idx, ToolWallIdx, LShapesIdxs, LShapesPosition, LShapesOrientation);
 }
 
-void AugmentedWhyCon::LShapesDetection()
+void WhyConLShape::LShapesDetection()
 {
     // this function detects nrLShapes LShape's and then quits
     detectedLShapes = 0;
@@ -273,4 +274,5 @@ void AugmentedWhyCon::LShapesDetection()
       if (detectedLShapes == 0) break;
     }
   }
-}
+
+} // namespace whycon_lshape

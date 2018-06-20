@@ -1,7 +1,9 @@
-#include <augmented_whycon/mc_torquing_controller_bwFilter.h>
+#include <whycon_lshape/BWFilter.h>
 
-namespace augmented_whycon{
-  bwFilter::bwFilter(int _n, double _s, double _f, int MA_windowSize_) : n(_n), s(_s), f(_f), MA_windowSize(MA_windowSize_)
+namespace whycon_lshape
+{
+
+  BWFilter::BWFilter(int _n, double _s, double _f, int MA_windowSize_) : n(_n), s(_s), f(_f), MA_windowSize(MA_windowSize_)
   {
     // butterworth filter
     n = n/2;
@@ -17,13 +19,13 @@ namespace augmented_whycon{
     }
   }
 
-  void bwFilter::initMA_window(Eigen::VectorXd initVal){
+  void BWFilter::initMA_window(Eigen::VectorXd initVal){
     MA_window = Eigen::MatrixXd::Ones(initVal.size(), MA_windowSize);
     MA_window_prev = Eigen::VectorXd::Zero(initVal.size());
     for (int i=0;i<initVal.size();i++) MA_window.row(i) = initVal[i] * MA_window.row(i);
   }
 
-  double bwFilter::filter(double x)
+  double BWFilter::filter(double x)
   {
    for(i=0; i<n; ++i)
    {
@@ -35,7 +37,7 @@ namespace augmented_whycon{
    return x;
   }
 
-  Eigen::VectorXd bwFilter::filterMA(Eigen::VectorXd x)
+  Eigen::VectorXd BWFilter::filterMA(Eigen::VectorXd x)
   {
     for (int i=0;i<x.size();i++){
       MA_window_prev(i) = MA_window.row(i)[cntr];
@@ -47,7 +49,7 @@ namespace augmented_whycon{
     return x;
   }
 
-  Eigen::VectorXd bwFilter::resetLastFilterStep()
+  Eigen::VectorXd BWFilter::resetLastFilterStep()
   {
     if (cntr == 0) cntr = MA_windowSize - 1;
     else cntr -= 1;

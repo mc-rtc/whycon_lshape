@@ -1,0 +1,4 @@
+<launch>
+<node name="whycon_lshape" pkg="whycon_lshape" type="whycon_lshape-node">
+</node>
+</launch>

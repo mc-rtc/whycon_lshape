@@ -1,18 +1,19 @@
 #pragma once
 
-#include <augmented_whycon/whycon_marker.h>
-#include <augmented_whycon/mc_torquing_controller_bwFilter.h>
-#include <eigen3/Eigen/Geometry>
+#include <whycon_lshape/whycon_marker.h>
+#include <whycon_lshape/BWFilter.h>
+#include <Eigen/Geometry>
 #include <array>
-#include <queue> 
+#include <queue>
 #include <utility>
 
-namespace augmented_whycon{
+namespace whycon_lshape
+{
 
-struct AugmentedWhyCon
+struct WhyConLShape
 {
 public:
-  AugmentedWhyCon();
+  WhyConLShape();
 
   unsigned int WhyConMarkersNr();
   unsigned int LShapesNr();
@@ -48,15 +49,15 @@ private:
   double wingLengthLShapeWall_0 = 0.05;
   double wingLengthLShapeWall_1 = 0.06;
   double wingLengthLShapeTolerance = 0.005;
-  bwFilter * bwFiltRailU;
-  bwFilter * bwFiltRailV;
-  bwFilter * bwFiltToolU;
-  bwFilter * bwFiltToolV;
-  bwFilter * bwFiltWallU;
-  bwFilter * bwFiltWallV;
-  bwFilter * bwFiltWallInclU;
-  bwFilter * bwFiltWallInclV;
+  BWFilter * bwFiltRailU;
+  BWFilter * bwFiltRailV;
+  BWFilter * bwFiltToolU;
+  BWFilter * bwFiltToolV;
+  BWFilter * bwFiltWallU;
+  BWFilter * bwFiltWallV;
+  BWFilter * bwFiltWallInclU;
+  BWFilter * bwFiltWallInclV;
   int cntrRun = 0;
 };
 
-}
+} // namespace whycon_lshape

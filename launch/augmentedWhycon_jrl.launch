@@ -1,4 +1,0 @@
-<launch>
-<node name="augmented_whycon" type="augmented_whycon" pkg="augmented_whycon">
-</node>
-</launch>

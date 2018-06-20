@@ -1,13 +1,14 @@
 <?xml version="1.0"?>
 <package>
-  <name>augmented_whycon</name>
+  <name>whycon_lshape</name>
   <version>0.0.0</version>
-  <description>The augmented_whycon package</description>
+  <description>L shape detection using WhyCon markers</description>
 
-  <maintainer email="kevin.chappellet@lirmm.fr">Kevin Chappellet</maintainer>
+  <author email="pfeifferkai@gmx.de">Kai Pfeiffer</author>
+  <maintainer email="pierre.gergondet@gmail.com">Pierre Gergondet</maintainer>
   <license>LGPLv3</license>
 
-  <url type="repository">https://github.com/chappk/augmented_whycon</url>
+  <url type="repository">https://gite.lirmm.fr/kai_pfeiffer_at_gmx_de/whyconLshape</url>
 
   <buildtool_depend>catkin</buildtool_depend>
 

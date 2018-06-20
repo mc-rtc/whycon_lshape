@@ -1,10 +1,11 @@
 #pragma once
 
-#include <eigen3/Eigen/Core>
-#include <eigen3/Eigen/Geometry>
+#include <Eigen/Core>
+#include <Eigen/Geometry>
 #include <list>
 
-namespace augmented_whycon{
+namespace whycon_lshape
+{
 
 struct WhyConMarker
 {
@@ -35,4 +36,4 @@ private:
   std::list<double> past_timestamp_;
 };
 
-}
+} // namespace whycon_lshape

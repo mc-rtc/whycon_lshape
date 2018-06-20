@@ -3,12 +3,15 @@
 #include <queue>
 #include <utility>
 
-namespace augmented_whycon{
-  struct bwFilter{
+namespace whycon_lshape
+{
+
+  struct BWFilter
+  {
     public:
-      bwFilter();
+      BWFilter();
       // order, samples per second == frequency, cutoff frequency
-      bwFilter(int _n, double _s, double _f, int MA_windowSize);
+      BWFilter(int _n, double _s, double _f, int MA_windowSize);
       void initMA_window(Eigen::VectorXd initVal);
       double filter(double x);
       Eigen::VectorXd filterMA(Eigen::VectorXd x);
@@ -33,4 +36,5 @@ namespace augmented_whycon{
       Eigen::VectorXd MA_window_prev;
       int cntr = 0;
   };
-}
+
+} // namespace whycon_lshape

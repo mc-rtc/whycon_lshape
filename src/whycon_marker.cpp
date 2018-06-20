@@ -1,8 +1,9 @@
-#include <augmented_whycon/whycon_marker.h>
+#include <whycon_lshape/whycon_marker.h>
 
 #include <iostream>
 
-namespace augmented_whycon{
+namespace whycon_lshape
+{
 
 WhyConMarker::WhyConMarker(unsigned int window, double alpha)
 {
@@ -20,7 +21,7 @@ WhyConMarker::WhyConMarker(double timestamp, const Eigen::Vector3d & pos,
   const Eigen::Quaterniond & ori, unsigned int window, double alpha)
   : WhyConMarker(window, alpha)
 {
-  timestamp = timestamp;
+  timestamp_ = timestamp;
   xyz_ = pos;
   ori_ = ori;
 }

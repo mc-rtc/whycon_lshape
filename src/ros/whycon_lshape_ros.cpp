@@ -1,8 +1,8 @@
-#include "augmented_whycon_ros.h"
-#include <eigen3/Eigen/Core>
-#include <eigen3/Eigen/Geometry>
+#include "whycon_lshape_ros.h"
+#include <Eigen/Core>
+#include <Eigen/Geometry>
 #include <functional>
-#include <augmented_whycon/AugmentedWhyConMsg.h>
+#include <whycon_lshape/WhyConLShapeMsg.h>
 #include <geometry_msgs/Pose.h>
 #include <sstream>
 #include <ros/console.h>
@@ -10,44 +10,44 @@
 #include <ctime>
 #include <iostream>
 
-namespace augmented_whycon
+namespace whycon_lshape
 {
-AugmentedWhyConROS::AugmentedWhyConROS(ros::NodeHandle & n)
+
+WhyConLShapeROS::WhyConLShapeROS(ros::NodeHandle & n)
 {
-  WhyCon_sub_ = n.subscribe("/whycon/poses", 1000., &AugmentedWhyConROS::on_whycon, this);
-  augmentedWhyCon_pub_ =
-    n.advertise<augmented_whycon::AugmentedWhyConMsg>("augmented_whycon", 1);
+  sub_ = n.subscribe("/whycon/poses", 1000., &WhyConLShapeROS::on_whycon, this);
+  pub_ =
+    n.advertise<whycon_lshape::WhyConLShapeMsg>("whycon_lshape", 1);
 }
 
-void AugmentedWhyConROS::on_whycon(const geometry_msgs::PoseArray::ConstPtr & data_msg)
+void WhyConLShapeROS::on_whycon(const geometry_msgs::PoseArray::ConstPtr & data_msg)
 {
-  const clock_t begin_time = std::clock();
   std::list<Eigen::Vector3d> markers_position;
   std::list<Eigen::Quaterniond> markers_orientation;
   for (const geometry_msgs::Pose & pose: data_msg->poses)
   {
     markers_position.push_back(Eigen::Vector3d(pose.position.x, pose.position.y, pose.position.z));
-    Eigen::Quaterniond a = Eigen::Quaterniond(pose.orientation.w, pose.orientation.x, pose.orientation.y, pose.orientation.z);
-    // markers_orientation.push_back(a);
+    //Eigen::Quaterniond a = Eigen::Quaterniond(pose.orientation.w, pose.orientation.x, pose.orientation.y, pose.orientation.z);
+    //markers_orientation.push_back(a);
   }
   double timestamp = data_msg->header.stamp.toSec();
-  augmentedWhyCon_.update(timestamp, markers_position, markers_orientation);
+  lshape_.update(timestamp, markers_position, markers_orientation);
   publish_results(data_msg->header);
 }
 
-void AugmentedWhyConROS::publish_results(const std_msgs::Header & header)
+void WhyConLShapeROS::publish_results(const std_msgs::Header & header)
 {
   // due to limited geometry_msgs options unsafe data types
-  augmented_whycon::AugmentedWhyConMsg msg;
+  whycon_lshape::WhyConLShapeMsg msg;
   msg.header = header;
-  for (unsigned int i = 0; i < augmentedWhyCon_.WhyConMarkersNr(); ++i)
+  for (unsigned int i = 0; i < lshape_.WhyConMarkersNr(); ++i)
   {
-    const Eigen::Vector3d & pos = augmentedWhyCon_.iWhyConMarker(i).position();
+    const Eigen::Vector3d & pos = lshape_.iWhyConMarker(i).position();
     geometry_msgs::Point point;
     point.x = pos[0];
     point.y = pos[1];
     point.z = pos[2];
-    const Eigen::Quaterniond & ori = augmentedWhyCon_.iWhyConMarker(i).orientation();
+    const Eigen::Quaterniond & ori = lshape_.iWhyConMarker(i).orientation();
     geometry_msgs::Quaternion quaternion;
     quaternion.x = ori.x();
     quaternion.y = ori.y();
@@ -58,7 +58,7 @@ void AugmentedWhyConROS::publish_results(const std_msgs::Header & header)
     msg.poses.push_back(pose);
   }
 
-  std::tuple<int, std::vector<int>, Eigen::Vector2i, std::vector<int>, std::vector<Eigen::Vector3d>, std::vector<Eigen::Quaterniond> > LShapes = augmentedWhyCon_.LShapeDetector();
+  auto LShapes = lshape_.LShapeDetector();
 
   msg.nrDetectedLShapes = std::get<0>(LShapes);
 
@@ -91,7 +91,7 @@ void AugmentedWhyConROS::publish_results(const std_msgs::Header & header)
     quat.z = std::get<5>(LShapes)[i].z();
     msg.LShapesOri.push_back(quat);
   }
-  augmentedWhyCon_pub_.publish(msg);
+  pub_.publish(msg);
 }
 
 }

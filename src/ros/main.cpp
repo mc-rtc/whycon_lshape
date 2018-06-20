@@ -1,11 +1,11 @@
 #include <ros/ros.h>
-#include "augmented_whycon_ros.h"
+#include "whycon_lshape_ros.h"
 
 int main(int argc, char**argv)
 {
-  ros::init(argc, argv, "augmented_whycon");
+  ros::init(argc, argv, "whycon_lshape");
   ros::NodeHandle n("~");
 
-  augmented_whycon::AugmentedWhyConROS node(n);
+  whycon_lshape::WhyConLShapeROS node(n);
   ros::spin();
 }
