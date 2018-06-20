@@ -25,23 +25,22 @@ WhyConLShape::WhyConLShape()
 }
 
 void WhyConLShape::update(double timestamp,
-  const std::list<Eigen::Vector3d> & markers_position,
-    const std::list<Eigen::Quaterniond> & markers_orientation)
+    const std::list<Eigen::Vector3d> & markers_position,
+    const std::list<Eigen::Quaterniond, Eigen::aligned_allocator<Eigen::Quaterniond>> & markers_orientation)
 {
   WhyConMarkers_.clear();
-  std::list<Eigen::Vector3d>::const_iterator it_marker_position;
-  std::list<Eigen::Quaterniond>::const_iterator it_marker_orientation;
-  if (cntrRun == 0){
+  if (cntrRun == 0)
+  {
     nrMarkersWhycon = (int)markers_position.size();
     MarkersPositionPrev = Eigen::MatrixXd::Zero(3,nrMarkersWhycon);
     frozen = Eigen::VectorXi::Zero(nrMarkersWhycon);
-    ROS_ERROR_STREAM("WhyCon works with "<< nrMarkersWhycon<<" markers");
+    ROS_INFO_STREAM("WhyCon works with "<< nrMarkersWhycon<<" markers");
   }
   for (unsigned int i = 0; i < markers_position.size(); ++i)
   {
-    it_marker_position = markers_position.begin();
+    auto it_marker_position = markers_position.begin();
     std::advance(it_marker_position, i);
-    it_marker_orientation = markers_orientation.begin();
+    auto it_marker_orientation = markers_orientation.begin();
     std::advance(it_marker_orientation, i);
     WhyConMarkers_.push_back(
       WhyConMarker(timestamp, (*it_marker_position), (*it_marker_orientation)));
@@ -65,9 +64,9 @@ const WhyConMarker & WhyConLShape::iWhyConMarker(unsigned int i)
   return WhyConMarkers_[i];
 }
 
-std::tuple<int, std::vector<int>, Eigen::Vector2i, std::vector<int>, std::vector<Eigen::Vector3d>, std::vector<Eigen::Quaterniond> > WhyConLShape::LShapeDetector()
+WhyConLShape::Result WhyConLShape::LShapeDetector()
 {
-  return std::make_tuple(detectedLShapes, idx, ToolWallIdx, LShapesIdxs, LShapesPosition, LShapesOrientation);
+  return {detectedLShapes, idx, LShapesIdxs, LShapesPosition, LShapesOrientation};
 }
 
 void WhyConLShape::LShapesDetection()
@@ -81,36 +80,47 @@ void WhyConLShape::LShapesDetection()
     bool L_found[4] = {false, false, false, false};
     std::vector<Eigen::Vector3d> LVectors;
     // try all points as the knot point
-    for (unsigned int i=0;i<nrMarkersWhycon;i++){
+    for (unsigned int i=0;i<nrMarkersWhycon;i++)
+    {
       Eigen::Vector3d p0;
       LVectors.clear();
       p0 = WhyConMarkers_[i].position();
       // compute all vectors pointing to the knot point
-      for(unsigned int j=0;j<nrMarkersWhycon;j++){
+      for(unsigned int j=0;j<nrMarkersWhycon;j++)
+      {
         Eigen::Vector3d interPos;
         interPos = WhyConMarkers_[j].position();
-        if (i!=j){
+        if (i!=j)
+        {
           LVectors.push_back(interPos - p0);
         }
         // check if there are any frozen markers
-        if (i == 0 && cntrRun > 0){
-          if ((WhyConMarkers_[j].position() - MarkersPositionPrev.col(j)).lpNorm<Eigen::Infinity>()<1e-8){
+        if (i == 0 && cntrRun > 0)
+        {
+          if ((WhyConMarkers_[j].position() - MarkersPositionPrev.col(j)).lpNorm<Eigen::Infinity>()<1e-8)
+          {
             frozen[j] = 1;
             // ROS_ERROR_STREAM("frozen: "<<j<<" "<<(WhyConMarkers_[j].position() - MarkersPositionPrev.col(j)).lpNorm<Eigen::Infinity>()<<" "<<(WhyConMarkers_[j].position() - MarkersPositionPrev.col(j)).transpose()<<" "<<MarkersPositionPrev.col(j).transpose()<<" "<<WhyConMarkers_[j].position().transpose());
           }
-          else frozen[j] = 0;
+          else
+          {
+            frozen[j] = 0;
+          }
           MarkersPositionPrev.col(j) = WhyConMarkers_[j].position();
         }
       }
       // ROS_ERROR_STREAM("frozen: "<<frozen.transpose());
       // check if any of these vectors are orthogonal to each other, not optimized
       bool L_found_ = false;
-      for(unsigned int j=0;j<LVectors.size();j++){
-        for(unsigned int k=j+1;k<LVectors.size();k++){
+      for(unsigned int j=0;j<LVectors.size();j++)
+      {
+        for(unsigned int k=j+1;k<LVectors.size();k++)
+        {
           double dotProduct = (LVectors[j]).dot(LVectors[k]);
           // ROS_ERROR_STREAM("findLShape: "<<i<<" "<<j<<" "<<k<<" dot: "<<dotProduct<<" "<<fabs(dotProduct)<<"; length: "<<LVectors[j].norm()<<" "<<LVectors[k].norm()<<" lengtherror: "<<std::abs(LVectors[j].norm()-LVectors[k].norm()));
           // if they are orthogonal, assign the indices, stop loop
-          if (std::abs(dotProduct) < 0.0005 && fabs(LVectors[j].norm()-LVectors[k].norm())<0.005){
+          if (std::abs(dotProduct) < 0.0005 && fabs(LVectors[j].norm()-LVectors[k].norm())<0.005)
+          {
             /// indeces of vectors of data.poses forming LShape
             Eigen::Vector3d idx_;
             // crosspoint
@@ -125,7 +135,8 @@ void WhyConLShape::LShapesDetection()
             idx_x = j;
             idx_y = k;
             // check if there are any frozen markers, if so quit
-            if (frozen[idx_[0]] == 1 || frozen[idx_[1]] == 1 || frozen[idx_[2]] == 1){
+            if (frozen[idx_[0]] == 1 || frozen[idx_[1]] == 1 || frozen[idx_[2]] == 1)
+            {
               // ROS_ERROR_STREAM("frozen: "<<frozen.transpose());
               continue;
             }
@@ -137,7 +148,8 @@ void WhyConLShape::LShapesDetection()
             //   std::cout<<"normal: "<<normal.transpose()<<std::endl;
             // }
             // normal/z-axis always has to point towards camera, define right hand system accordingly
-            if (normal[2] > 0){
+            if (normal[2] > 0)
+            {
               Eigen::Vector3d interWing;
               double interIdx_;
               int interIdx;
@@ -154,61 +166,72 @@ void WhyConLShape::LShapesDetection()
             Eigen::Vector3d v;
             u = LVectors[idx_x];
             v = LVectors[idx_y];
-            if (fabs(u.norm() - wingLengthLShapeRail)<wingLengthLShapeTolerance && fabs(v.norm() - wingLengthLShapeRail)<wingLengthLShapeTolerance){
-              if (markersInitialized[0] == false){
+            if (fabs(u.norm() - wingLengthLShapeRail)<wingLengthLShapeTolerance && fabs(v.norm() - wingLengthLShapeRail)<wingLengthLShapeTolerance)
+            {
+              if (markersInitialized[0] == false)
+              {
                 markersInitialized[0] = true;
                 maFiltRailU.init(u);
                 maFiltRailV.init(v);
               }
-              if (L_found[0] == false){
+              if (L_found[0] == false)
+              {
                 L_found[0] = true;
                 maFiltRailU.filter(u);
                 maFiltRailV.filter(v);
               }
               LShapesIdxs.push_back(0);
             }
-            else if (fabs(u.norm() - wingLengthLShapeTool)<wingLengthLShapeTolerance && fabs(v.norm() - wingLengthLShapeTool)<wingLengthLShapeTolerance){
-              if (markersInitialized[1] == false){
+            else if (fabs(u.norm() - wingLengthLShapeTool)<wingLengthLShapeTolerance && fabs(v.norm() - wingLengthLShapeTool)<wingLengthLShapeTolerance)
+            {
+              if (markersInitialized[1] == false)
+              {
                 markersInitialized[1] = true;
                 maFiltToolU.init(u);
                 maFiltToolV.init(v);
               }
-              if (L_found[1] == false){
+              if (L_found[1] == false)
+              {
                 L_found[1] = true;
                 maFiltToolU.filter(u);
                 maFiltToolV.filter(v);
               }
-              ToolWallIdx[0] = detectedLShapes;
               LShapesIdxs.push_back(1);
             }
-            else if (fabs(u.norm() - wingLengthLShapeWall_0)<wingLengthLShapeTolerance && fabs(v.norm() - wingLengthLShapeWall_0)<wingLengthLShapeTolerance){
-              if (markersInitialized[2] == false){
+            else if (fabs(u.norm() - wingLengthLShapeWall_0)<wingLengthLShapeTolerance && fabs(v.norm() - wingLengthLShapeWall_0)<wingLengthLShapeTolerance)
+            {
+              if (markersInitialized[2] == false)
+              {
                 markersInitialized[2] = true;
                 maFiltWallU.init(u);
                 maFiltWallV.init(v);
               }
-              if (L_found[2] == false){
+              if (L_found[2] == false)
+              {
                 L_found[2] = true;
                 maFiltWallU.filter(u);
                 maFiltWallV.filter(v);
               }
-              ToolWallIdx[1] = detectedLShapes;
               LShapesIdxs.push_back(2);
             }
-            else if (fabs(u.norm() - wingLengthLShapeWall_1)<wingLengthLShapeTolerance && fabs(v.norm() - wingLengthLShapeWall_1)<wingLengthLShapeTolerance){
-              if (markersInitialized[3] == false){
+            else if (fabs(u.norm() - wingLengthLShapeWall_1)<wingLengthLShapeTolerance && fabs(v.norm() - wingLengthLShapeWall_1)<wingLengthLShapeTolerance)
+            {
+              if (markersInitialized[3] == false)
+              {
                 markersInitialized[3] = true;
                 maFiltWallInclU.init(u);
                 maFiltWallInclV.init(v);
               }
-              if (L_found[3] == false){
+              if (L_found[3] == false)
+              {
                 L_found[3] = true;
                 maFiltWallInclU.filter(u);
                 maFiltWallInclV.filter(v);
               }
               LShapesIdxs.push_back(3);
             }
-            else{
+            else
+            {
               break;
             }
             normal = (u/u.norm()).cross(v/v.norm());
@@ -247,25 +270,32 @@ void WhyConLShape::LShapesDetection()
       if(detectedLShapes == nrLShapes) break;
     }
     // check if an index appears twice in the index list
-    for(unsigned int i=0;i<idx.size();i++){
-      for (unsigned int j = i+1;j<idx.size();j++){
-        if (idx[i] == idx[j]){
+    for(unsigned int i=0;i<idx.size();i++)
+    {
+      for (unsigned int j = i+1;j<idx.size();j++)
+      {
+        if (idx[i] == idx[j])
+        {
           Eigen::VectorXd u_reset;
           detectedLShapes = 0;
           // reset filter
-          if (L_found[0] == true){
+          if (L_found[0] == true)
+          {
             maFiltRailU.resetLastFilterStep();
             maFiltRailV.resetLastFilterStep();
           }
-          if (L_found[1] == true){
+          if (L_found[1] == true)
+          {
             maFiltToolU.resetLastFilterStep();
             maFiltToolV.resetLastFilterStep();
           }
-          if (L_found[2] == true){
+          if (L_found[2] == true)
+          {
             maFiltWallU.resetLastFilterStep();
             maFiltWallV.resetLastFilterStep();
           }
-          if (L_found[3] == true){
+          if (L_found[3] == true)
+          {
             maFiltWallInclU.resetLastFilterStep();
             maFiltWallInclV.resetLastFilterStep();
           }

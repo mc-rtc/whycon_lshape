@@ -9,6 +9,7 @@ namespace whycon_lshape
 
 struct WhyConMarker
 {
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 public:
   WhyConMarker(unsigned int window=500, double alpha=1.);
   WhyConMarker(double timestamp, const Eigen::Vector3d & pos,

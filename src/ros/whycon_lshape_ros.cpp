@@ -23,12 +23,12 @@ WhyConLShapeROS::WhyConLShapeROS(ros::NodeHandle & n)
 void WhyConLShapeROS::on_whycon(const geometry_msgs::PoseArray::ConstPtr & data_msg)
 {
   std::list<Eigen::Vector3d> markers_position;
-  std::list<Eigen::Quaterniond> markers_orientation;
+  std::list<Eigen::Quaterniond, Eigen::aligned_allocator<Eigen::Quaterniond>> markers_orientation;
   for (const geometry_msgs::Pose & pose: data_msg->poses)
   {
     markers_position.push_back(Eigen::Vector3d(pose.position.x, pose.position.y, pose.position.z));
-    //Eigen::Quaterniond a = Eigen::Quaterniond(pose.orientation.w, pose.orientation.x, pose.orientation.y, pose.orientation.z);
-    //markers_orientation.push_back(a);
+    Eigen::Quaterniond a = Eigen::Quaterniond(pose.orientation.w, pose.orientation.x, pose.orientation.y, pose.orientation.z);
+    markers_orientation.push_back(a);
   }
   double timestamp = data_msg->header.stamp.toSec();
   lshape_.update(timestamp, markers_position, markers_orientation);
@@ -60,37 +60,32 @@ void WhyConLShapeROS::publish_results(const std_msgs::Header & header)
 
   auto LShapes = lshape_.LShapeDetector();
 
-  msg.nrDetectedLShapes = std::get<0>(LShapes);
+  msg.nrDetectedLShapes = LShapes.detectedLShapes;
 
-  for (int i=0;i<std::get<0>(LShapes);i++)
+  for (int i=0;i<LShapes.detectedLShapes;i++)
   {
     geometry_msgs::Point idx;
-    idx.x = std::get<1>(LShapes)[i*3+0];
-    idx.y = std::get<1>(LShapes)[i*3+1];
-    idx.z = std::get<1>(LShapes)[i*3+2];
+    idx.x = LShapes.idx[i*3+0];
+    idx.y = LShapes.idx[i*3+1];
+    idx.z = LShapes.idx[i*3+2];
     msg.idx.push_back(idx);
-  }
 
-  for (int i=0;i<std::get<0>(LShapes);i++){
-    msg.LShapesIdxs.push_back(std::get<3>(LShapes)[i]);
-  }
-
-  for (int i=0;i<std::get<0>(LShapes);i++){
     geometry_msgs::Point LShapesPos;
-    LShapesPos.x = std::get<4>(LShapes)[i][0];
-    LShapesPos.y = std::get<4>(LShapes)[i][1];
-    LShapesPos.z = std::get<4>(LShapes)[i][2];
+    LShapesPos.x = LShapes.LShapesPosition[i][0];
+    LShapesPos.y = LShapes.LShapesPosition[i][1];
+    LShapesPos.z = LShapes.LShapesPosition[i][2];
     msg.LShapesPos.push_back(LShapesPos);
-  }
 
-  for (int i=0;i<std::get<0>(LShapes);i++){
     geometry_msgs::Quaternion quat;
-    quat.w = std::get<5>(LShapes)[i].w();
-    quat.x = std::get<5>(LShapes)[i].x();
-    quat.y = std::get<5>(LShapes)[i].y();
-    quat.z = std::get<5>(LShapes)[i].z();
+    quat.w = LShapes.LShapesOrientation[i].w();
+    quat.x = LShapes.LShapesOrientation[i].x();
+    quat.y = LShapes.LShapesOrientation[i].y();
+    quat.z = LShapes.LShapesOrientation[i].z();
     msg.LShapesOri.push_back(quat);
   }
+
+  msg.LShapesIdxs = LShapes.LShapesIdxs;
+
   pub_.publish(msg);
 }
 

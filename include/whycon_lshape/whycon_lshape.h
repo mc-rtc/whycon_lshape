@@ -3,6 +3,7 @@
 #include <whycon_lshape/whycon_marker.h>
 #include <whycon_lshape/MAFilter.h>
 #include <Eigen/Geometry>
+#include <Eigen/StdVector>
 #include <array>
 #include <queue>
 #include <utility>
@@ -12,6 +13,7 @@ namespace whycon_lshape
 
 struct WhyConLShape
 {
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 public:
   WhyConLShape();
 
@@ -21,10 +23,20 @@ public:
   const WhyConMarker & iWhyConMarker(unsigned int i);
   // std::pair<const std::array<unsigned int, 3> &, const Eigen::Quaterniond &> iLShape(unsigned int i);
 
-  std::tuple<int, std::vector<int>, Eigen::Vector2i, std::vector<int>, std::vector<Eigen::Vector3d>, std::vector<Eigen::Quaterniond> > LShapeDetector();
+  struct Result
+  {
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+    int detectedLShapes;
+    std::vector<int> idx;
+    std::vector<int> LShapesIdxs;
+    std::vector<Eigen::Vector3d> LShapesPosition;
+    std::vector<Eigen::Quaterniond, Eigen::aligned_allocator<Eigen::Quaterniond>> LShapesOrientation;
+  };
+
+  Result LShapeDetector();
 
   void update(double timestamp, const std::list<Eigen::Vector3d> & markers_position,
-    const std::list<Eigen::Quaterniond> & markers_orientation);
+    const std::list<Eigen::Quaterniond, Eigen::aligned_allocator<Eigen::Quaterniond>> & markers_orientation);
 
 private:
   void idxsDetection(double timestamp, const std::list<Eigen::Vector3d> & markers,
@@ -32,16 +44,15 @@ private:
   void LShapesDetection();
 
 private:
-  std::vector<WhyConMarker> WhyConMarkers_;
+  std::vector<WhyConMarker, Eigen::aligned_allocator<WhyConMarker>> WhyConMarkers_;
   unsigned int nrMarkersWhycon;
   int detectedLShapes;
   std::vector<int> idx;
-  Eigen::Vector2i ToolWallIdx;
   std::vector<int> LShapesIdxs;
   Eigen::MatrixXd MarkersPositionPrev;
   Eigen::VectorXi frozen;
   std::vector<Eigen::Vector3d> LShapesPosition;
-  std::vector<Eigen::Quaterniond> LShapesOrientation;
+  std::vector<Eigen::Quaterniond, Eigen::aligned_allocator<Eigen::Quaterniond>> LShapesOrientation;
   bool markersInitialized[4] = {false, false, false, false};
   int nrLShapes = 4;
   double wingLengthLShapeRail = 0.08;

@@ -8,6 +8,7 @@ namespace whycon_lshape
 
 struct WhyConLShapeROS
 {
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 public:
   WhyConLShapeROS(ros::NodeHandle & n);
 
