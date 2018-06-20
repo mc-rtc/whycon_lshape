@@ -1,4 +1,15 @@
 <launch>
-<node name="whycon_lshape" pkg="whycon_lshape" type="whycon_lshape">
+<node name="whycon_lshape" pkg="whycon_lshape" type="whycon_lshape" output="screen">
+  <rosparam param="l_shapes">
+    - name: "rail"
+      wing_length: 0.08
+    - name: "tool"
+      wing_length: 0.04
+    - name: "wall_0"
+      wing_length: 0.05
+    - name: "wall_1"
+      wing_length: 0.06
+  </rosparam>
+  <param name="tolerance" type="double" value="0.005" />
 </node>
 </launch>

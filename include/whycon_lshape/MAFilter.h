@@ -11,14 +11,14 @@ namespace whycon_lshape
   {
     public:
       MAFilter(int windowSize);
-      void init(const Eigen::VectorXd & initVal);
       void filter(Eigen::Ref<Eigen::VectorXd> x);
       void resetLastFilterStep();
     private:
       int windowSize;
       Eigen::MatrixXd window;
       Eigen::VectorXd window_prev;
-      int cntr = 0;
+      int cntr;
+      void init(const Eigen::Ref<const Eigen::VectorXd> initVal);
   };
 
 } // namespace whycon_lshape

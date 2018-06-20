@@ -11,64 +11,67 @@
 namespace whycon_lshape
 {
 
+/** An L shape formed by three WhyCon marker */
+struct LShape
+{
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
+  LShape(const std::string & name, double wl)
+  : name(name), wing_length(wl),
+    filter_x(25), filter_y(25)
+  {
+  }
+
+  /** Name used to identify the shape */
+  std::string name;
+  /** Lenght of the wings */
+  double wing_length;
+  /** True if the shape has been found among the current markers */
+  bool found = false;
+  /** Indices of the markers that compose the shape
+   *
+   * The first marker is the origin.
+   * The second marker points towards the x direction
+   * The third marker points towards the y direction
+   *
+   * The values have no sense if found is false
+   */
+  std::array<size_t, 3> markers;
+  /** Filter for the x-direction */
+  MAFilter filter_x;
+  /** Filter for the y-direction */
+  MAFilter filter_y;
+  /** Position of the L center */
+  Eigen::Vector3d pos;
+  /** Orientation of the L */
+  Eigen::Quaterniond ori;
+};
+
 struct WhyConLShape
 {
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 public:
   WhyConLShape();
 
-  unsigned int WhyConMarkersNr();
-  unsigned int LShapesNr();
+  /** Add an l-shape */
+  void add_lshape(const std::string & name, double wl);
 
-  const WhyConMarker & iWhyConMarker(unsigned int i);
-  // std::pair<const std::array<unsigned int, 3> &, const Eigen::Quaterniond &> iLShape(unsigned int i);
+  /** Update a single marker */
+  void update(size_t idx, const Eigen::Vector3d & pos, const Eigen::Quaterniond & ori);
 
-  struct Result
-  {
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    int detectedLShapes;
-    std::vector<int> idx;
-    std::vector<int> LShapesIdxs;
-    std::vector<Eigen::Vector3d> LShapesPosition;
-    std::vector<Eigen::Quaterniond, Eigen::aligned_allocator<Eigen::Quaterniond>> LShapesOrientation;
-  };
+  /** Set tolerance */
+  void tolerance(double t) { tolerance_ = t; }
+  /** Get tolerance */
+  double tolerance() { return tolerance_; }
 
-  Result LShapeDetector();
-
-  void update(double timestamp, const std::list<Eigen::Vector3d> & markers_position,
-    const std::list<Eigen::Quaterniond, Eigen::aligned_allocator<Eigen::Quaterniond>> & markers_orientation);
-
+  const std::vector<LShape> & detect();
 private:
-  void idxsDetection(double timestamp, const std::list<Eigen::Vector3d> & markers,
-    const std::list<Eigen::Quaterniond> & markers_orientation);
   void LShapesDetection();
-
 private:
-  std::vector<WhyConMarker, Eigen::aligned_allocator<WhyConMarker>> WhyConMarkers_;
-  unsigned int nrMarkersWhycon;
-  int detectedLShapes;
-  std::vector<int> idx;
-  std::vector<int> LShapesIdxs;
-  Eigen::MatrixXd MarkersPositionPrev;
-  Eigen::VectorXi frozen;
-  std::vector<Eigen::Vector3d> LShapesPosition;
-  std::vector<Eigen::Quaterniond, Eigen::aligned_allocator<Eigen::Quaterniond>> LShapesOrientation;
-  bool markersInitialized[4] = {false, false, false, false};
-  int nrLShapes = 4;
-  double wingLengthLShapeRail = 0.08;
-  double wingLengthLShapeTool = 0.04;
-  double wingLengthLShapeWall_0 = 0.05;
-  double wingLengthLShapeWall_1 = 0.06;
-  double wingLengthLShapeTolerance = 0.005;
-  MAFilter maFiltRailU;
-  MAFilter maFiltRailV;
-  MAFilter maFiltToolU;
-  MAFilter maFiltToolV;
-  MAFilter maFiltWallU;
-  MAFilter maFiltWallV;
-  MAFilter maFiltWallInclU;
-  MAFilter maFiltWallInclV;
-  int cntrRun = 0;
+  std::vector<WhyConMarker, Eigen::aligned_allocator<WhyConMarker>> markers_;
+  std::vector<LShape> shapes_;
+  double tolerance_ = 0.005;
+  int iter_ = 0;
 };
 
 } // namespace whycon_lshape

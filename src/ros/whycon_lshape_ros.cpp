@@ -18,20 +18,40 @@ WhyConLShapeROS::WhyConLShapeROS(ros::NodeHandle & n)
   sub_ = n.subscribe("/whycon/poses", 1000., &WhyConLShapeROS::on_whycon, this);
   pub_ =
     n.advertise<whycon_lshape::WhyConLShapeMsg>("whycon_lshape", 1);
+  double tolerance = lshape_.tolerance();
+  n.param("tolerance", tolerance, tolerance);
+  lshape_.tolerance(tolerance);
+  XmlRpc::XmlRpcValue v;
+  n.param("l_shapes", v, v);
+  if(v.valid())
+  {
+    for(int i = 0; i < v.size(); ++i)
+    {
+      auto & vv = v[i];
+      if(vv.hasMember("name") && vv.hasMember("wing_length"))
+      {
+        std::string name = vv["name"];
+        double wl = vv["wing_length"];
+        lshape_.add_lshape(name, wl);
+        ROS_INFO_STREAM("Added L-shape " << name << " (wing length: " << wl << ")");
+      }
+      else
+      {
+        ROS_ERROR_STREAM("Invalid entry in l_shapes param");
+      }
+    }
+  }
 }
 
 void WhyConLShapeROS::on_whycon(const geometry_msgs::PoseArray::ConstPtr & data_msg)
 {
-  std::list<Eigen::Vector3d> markers_position;
-  std::list<Eigen::Quaterniond, Eigen::aligned_allocator<Eigen::Quaterniond>> markers_orientation;
-  for (const geometry_msgs::Pose & pose: data_msg->poses)
+  size_t idx = 0;
+  for(const auto & pose : data_msg->poses)
   {
-    markers_position.push_back(Eigen::Vector3d(pose.position.x, pose.position.y, pose.position.z));
-    Eigen::Quaterniond a = Eigen::Quaterniond(pose.orientation.w, pose.orientation.x, pose.orientation.y, pose.orientation.z);
-    markers_orientation.push_back(a);
+    lshape_.update(idx, {pose.position.x, pose.position.y, pose.position.z},
+                   {pose.orientation.w, pose.position.x, pose.orientation.y, pose.orientation.z});
+    idx++;
   }
-  double timestamp = data_msg->header.stamp.toSec();
-  lshape_.update(timestamp, markers_position, markers_orientation);
   publish_results(data_msg->header);
 }
 
@@ -40,52 +60,21 @@ void WhyConLShapeROS::publish_results(const std_msgs::Header & header)
   // due to limited geometry_msgs options unsafe data types
   whycon_lshape::WhyConLShapeMsg msg;
   msg.header = header;
-  for (unsigned int i = 0; i < lshape_.WhyConMarkersNr(); ++i)
+  const auto & lshapes = lshape_.detect();
+  for(const auto & s : lshapes)
   {
-    const Eigen::Vector3d & pos = lshape_.iWhyConMarker(i).position();
-    geometry_msgs::Point point;
-    point.x = pos[0];
-    point.y = pos[1];
-    point.z = pos[2];
-    const Eigen::Quaterniond & ori = lshape_.iWhyConMarker(i).orientation();
-    geometry_msgs::Quaternion quaternion;
-    quaternion.x = ori.x();
-    quaternion.y = ori.y();
-    quaternion.z = ori.z();
-    quaternion.w = ori.w();
-    geometry_msgs::Pose pose;
-    pose.position = point;
-    msg.poses.push_back(pose);
+    if(!s.found) { continue; }
+    whycon_lshape::LShapeMsg lmsg;
+    lmsg.name = s.name;
+    lmsg.pose.position.x = s.pos.x();
+    lmsg.pose.position.y = s.pos.y();
+    lmsg.pose.position.z = s.pos.z();
+    lmsg.pose.orientation.w = s.ori.w();
+    lmsg.pose.orientation.x = s.ori.x();
+    lmsg.pose.orientation.y = s.ori.y();
+    lmsg.pose.orientation.z = s.ori.z();
+    msg.shapes.push_back(lmsg);
   }
-
-  auto LShapes = lshape_.LShapeDetector();
-
-  msg.nrDetectedLShapes = LShapes.detectedLShapes;
-
-  for (int i=0;i<LShapes.detectedLShapes;i++)
-  {
-    geometry_msgs::Point idx;
-    idx.x = LShapes.idx[i*3+0];
-    idx.y = LShapes.idx[i*3+1];
-    idx.z = LShapes.idx[i*3+2];
-    msg.idx.push_back(idx);
-
-    geometry_msgs::Point LShapesPos;
-    LShapesPos.x = LShapes.LShapesPosition[i][0];
-    LShapesPos.y = LShapes.LShapesPosition[i][1];
-    LShapesPos.z = LShapes.LShapesPosition[i][2];
-    msg.LShapesPos.push_back(LShapesPos);
-
-    geometry_msgs::Quaternion quat;
-    quat.w = LShapes.LShapesOrientation[i].w();
-    quat.x = LShapes.LShapesOrientation[i].x();
-    quat.y = LShapes.LShapesOrientation[i].y();
-    quat.z = LShapes.LShapesOrientation[i].z();
-    msg.LShapesOri.push_back(quat);
-  }
-
-  msg.LShapesIdxs = LShapes.LShapesIdxs;
-
   pub_.publish(msg);
 }
 
