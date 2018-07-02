@@ -1,4 +1,0 @@
-<launch>
-<node name="augmentedWhycon" type="augmentedWhycon" pkg="augmentedWhycon">
-</node>
-</launch>
