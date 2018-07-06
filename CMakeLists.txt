@@ -14,6 +14,9 @@ find_package(catkin REQUIRED COMPONENTS
   tf
 )
 
+find_package(Eigen3 REQUIRED)
+include_directories("${EIGEN3_INCLUDE_DIR}")
+
 add_message_files(
   FILES
   LShapeMsg.msg
