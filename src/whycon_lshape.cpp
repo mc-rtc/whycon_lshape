@@ -108,7 +108,7 @@ void WhyConLShape::LShapesDetection()
             {
               shape.found = true;
               shape.filter_x.filter(u);
-              shape.filter_x.filter(v);
+              shape.filter_y.filter(v);
               shape.markers = idx;
               lshape = &shape;
               break;
